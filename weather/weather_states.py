@@ -27,7 +27,8 @@ async def process_location(message: Message, state: FSMContext):
     position = str(latitude) + ',' + str(longitude)
     forecast = await weather.current(position)
     text = current_weather_format(forecast)
-    logger.write('\n' + text[0] + '\n', 'debug')
+    user = message['from']
+    logger.write('\n' + user.first_name + ' ' + user.last_name + '\n' + text[0] + '\n', 'debug')
 
     await message.reply(text=text[0], reply=False)
     await message.reply(text=text[1], reply=False)

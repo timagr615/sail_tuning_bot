@@ -4,3 +4,4 @@ __pycache__/
 *.log
 config.py
 test.py
+tuning.db
