@@ -4,7 +4,10 @@ from aiogram.utils.executor import Executor
 
 from config import (BOT_TOKEN, SKIP_UPDATES, ADMIN_ID, weatherapi_url, weatherapi_key)
 from weather.weatherapi import WeatherApiV1
+from db.database import engine
+from db import models
 
+models.Base.metadata.create_all(bind=engine)
 
 storage = MemoryStorage()
 weather = WeatherApiV1(weatherapi_url, weatherapi_key)
