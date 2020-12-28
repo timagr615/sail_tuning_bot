@@ -22,3 +22,6 @@
 
     logger = BaseLogger(DEBUG, LOGFILE)
 ```
+`BOT_TOKEN` - токен бота в телеграме
+`ADMIN_ID` - id владельа токена в телеграме
+`weatherapi_key` - api ключ для получения данных о погоде, его можно получить на сайте https://www.weatherapi.com/
