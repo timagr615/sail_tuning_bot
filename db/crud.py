@@ -42,3 +42,12 @@ def create_sail(db: Session, sail: dict):
     db.commit()
     db.refresh(db_sail)
     return db_sail
+
+
+def get_sails(db: Session):
+    return db.query(models.Sail).all()
+
+
+def get_sails_by_wind(db: Session, wind: float):
+    sails = get_sails(db)
+    return [s for s in sails if s.wind_min <= wind <= s.wind_max]
