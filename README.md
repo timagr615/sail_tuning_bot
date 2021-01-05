@@ -1,6 +1,11 @@
 # sail_tuning_bot
 Бот, помогающий в настройке яхты.
 
+Для поиска в telegram: @sail_tuning_bot
+
+В настоящее время бот находится в разработке.
+
+
 ### Для использования:
 
 - git clone https://github.com/timagr615/sail_tuning_bot.git
