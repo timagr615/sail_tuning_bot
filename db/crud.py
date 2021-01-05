@@ -23,3 +23,22 @@ def create_user(db: Session, message: types.Message):
         db.commit()
         db.refresh(db_user)
         return db_user
+
+
+def create_sail(db: Session, sail: dict):
+    db_sail = models.Sail(
+        firm=sail['firm'],
+        model=sail['model'],
+        wind_min=sail['wind_min'],
+        wind_max=sail['wind_max'],
+        mast_rake=sail['mast_rake'],
+        prebend=sail['prebend'],
+        tension=sail['tension'],
+        mast_step=sail['mast_step'],
+        chocks=sail['chocks'],
+        spreraders_leng=sail['spreraders_leng']
+    )
+    db.add(db_sail)
+    db.commit()
+    db.refresh(db_sail)
+    return db_sail
