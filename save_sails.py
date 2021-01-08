@@ -3,7 +3,7 @@ from db.database import SessionLocal
 
 
 with open("dbb", "r") as file:
-    db = SessionLocal()
+
     for line in file:
         data = line.split(',')[1:]
         data[-1] = data[-1].replace('\n', '')
@@ -21,6 +21,6 @@ with open("dbb", "r") as file:
             'chocks': data[8],
             'spreraders_leng': int(data[9])
         }
-
+        db = SessionLocal()
         crud.create_sail(db, sail)
-    db.close()
+        db.close()
