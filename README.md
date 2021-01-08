@@ -35,4 +35,6 @@ logger = BaseLogger(DEBUG, LOGFILE)
 
 `proxy_url` - необязательный параметр. Если хотите использовать proxy, то его следует указать в виде `'http://user:password@ip:port'`
 
+- Запустить файл `save_sails.py`
+
 - Запустить бота можно с помощью файла `main.py`
