@@ -51,3 +51,35 @@ def get_sails(db: Session):
 def get_sails_by_wind(db: Session, wind: float):
     sails = get_sails(db)
     return [s for s in sails if s.wind_min <= wind <= s.wind_max]
+
+
+def create_tuning(db: Session, message: types.Message, tuning: dict):
+    current_user = message['from']
+    user = get_user(db, current_user.id)
+    '''tuning['user_id'] = user.id
+    db_tuning = models.Tuning(**tuning)'''
+
+    db_tuning = models.Tuning(
+        user_id=user.id,
+        boat=tuning['boat'],
+        sail_firm=tuning['sail_firm'],
+        sail_model=tuning['sail_model'],
+        place=tuning['place'],
+        wind=tuning['wind'],
+        gusts=tuning['gusts'],
+        wave_height=tuning['wave_height'],
+        wave_length=tuning['wave_length'],
+        crew_weight=tuning['crew_weight'],
+        mast_rake=tuning['mast_rake'],
+        prebend=tuning['prebend'],
+        tension=tuning['tension'],
+        mast_step=tuning['mast_step'],
+        chocks=tuning['chocks'],
+        spreraders_leng=tuning['spreraders_leng'],
+        quality=tuning['quality'],
+        description=tuning['description'],
+    )
+    db.add(db_tuning)
+    db.commit()
+    db.refresh(db_tuning)
+    return db_tuning
