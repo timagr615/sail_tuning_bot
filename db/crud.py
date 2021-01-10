@@ -83,3 +83,24 @@ def create_tuning(db: Session, message: types.Message, tuning: dict):
     db.commit()
     db.refresh(db_tuning)
     return db_tuning
+
+
+def show_all_personal_tunings(db: Session, telegram_id):
+    user = get_user(db, telegram_id)
+    tunings = db.query(models.Tuning).filter(models.Tuning.user_id == user.id)
+    data = []
+    for tuning in tunings:
+        data.append([tuning.boat, tuning.sail_firm, tuning.sail_model, tuning.place, tuning.wind,
+                     tuning.gusts, tuning.id])
+    return data
+
+
+def find_tuning_by_id(db: Session, tuning_id):
+    tuning = db.query(models.Tuning).filter(models.Tuning.id == tuning_id).scalar()
+    return tuning
+
+
+def delete_tuning_by_id(db: Session, tuning_id):
+    db.query(models.Tuning).filter(models.Tuning.id == tuning_id).delete(synchronize_session=False)
+    db.commit()
+
