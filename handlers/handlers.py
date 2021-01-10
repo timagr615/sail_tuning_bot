@@ -1,6 +1,7 @@
 from weather.weather_states import *
 from tuning.tuning_states import *
 from personal_tuning.personal_tuning_states import *
+from personal_tuning.personal_show_states import *
 from bot import dp
 from db import crud
 from db.database import SessionLocal
@@ -15,7 +16,8 @@ async def send_menu(message: Message):
     await message.reply(text='''Дступные команды:
     /help - подсказки по командам; \n
     /tuning - выбрать настройку; \n
-    /personal - записать дичную настройку; \n
+    /create - записать личную настройку; \n
+    /show - показать личные настройки; \n
     /weather - узнать прогноз погоды для конкретного места \n''', reply=False)
 
 

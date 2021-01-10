@@ -28,7 +28,7 @@ class PersonalTuning(StatesGroup):
     description = State()
 
 
-@dp.message_handler(commands='personal')
+@dp.message_handler(commands='create')
 async def personal_start(message: Message):
     await PersonalTuning.boat.set()
     markup = ReplyKeyboardMarkup(resize_keyboard=True, selective=True)
