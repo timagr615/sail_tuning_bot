@@ -85,22 +85,29 @@ def create_tuning(db: Session, message: types.Message, tuning: dict):
     return db_tuning
 
 
-def show_all_personal_tunings(db: Session, telegram_id):
-    user = get_user(db, telegram_id)
-    tunings = db.query(models.Tuning).filter(models.Tuning.user_id == user.id)
-    data = []
-    for tuning in tunings:
-        data.append([tuning.boat, tuning.sail_firm, tuning.sail_model, tuning.place, tuning.wind,
-                     tuning.gusts, tuning.id])
-    return data
-
-
-def find_tuning_by_id(db: Session, tuning_id):
+def find_tuning_by_id(db: Session, tuning_id: int):
     tuning = db.query(models.Tuning).filter(models.Tuning.id == tuning_id).scalar()
     return tuning
 
 
-def delete_tuning_by_id(db: Session, tuning_id):
+def delete_tuning_by_id(db: Session, tuning_id: int):
     db.query(models.Tuning).filter(models.Tuning.id == tuning_id).delete(synchronize_session=False)
     db.commit()
 
+
+def find_tunings_by_filter(db: Session, filt_name, filt_value, telegram_id: int):
+    data = []
+    user = get_user(db, telegram_id)
+    tunings = db.query(models.Tuning).filter(models.Tuning.user_id == user.id)
+
+    if filt_name == 'sail_model':
+        tunings = tunings.filter(models.Tuning.sail_model == filt_value)
+    elif filt_name == 'location':
+        tunings = tunings.filter(models.Tuning.place == filt_value)
+    elif filt_name == 'qualities':
+        tunings = tunings.filter(models.Tuning.quality == filt_value)
+
+    for tuning in tunings:
+        data.append([tuning.boat, tuning.sail_firm, tuning.sail_model, tuning.place, tuning.wind,
+                     tuning.gusts, tuning.id])
+    return data
