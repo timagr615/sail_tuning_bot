@@ -2,9 +2,11 @@ from aiogram.dispatcher.filters.state import State, StatesGroup
 import aiogram.utils.markdown as fmt
 from aiogram.types import Message, ReplyKeyboardRemove, ReplyKeyboardMarkup
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
-from bot import dp, weather, bot
+from bot import dp, bot
 from aiogram.dispatcher import FSMContext
-from db.crud import show_all_personal_tunings, find_tuning_by_id, delete_tuning_by_id
+from db.crud import find_tuning_by_id, delete_tuning_by_id, find_tunings_by_filter
+from db.utils import show_all_personal_tunings, show_personal_tuning, choice_filters_for_tuning, \
+    find_personal_tunings_by_filter
 from db.database import SessionLocal
 
 
@@ -47,6 +49,23 @@ def all_tunings_inline_kb(data):
     return inline_kb
 
 
+def filtered_tunings_inline_kb(filters: str, data: list):
+    fil = ''
+    if filters == 'По модели паруса':
+        fil = 'sail_model'
+    elif filters == 'По месту':
+        fil = 'location'
+    elif filters == 'По качеству завала':
+        fil = 'qualities'
+    inline_kb = InlineKeyboardMarkup(row_width=3)
+    for item in data:
+        text = item
+        callback_data = 'pt' + str(item) + '!filter' + fil
+        inline_btn = InlineKeyboardButton(text, callback_data=callback_data)
+        inline_kb.add(inline_btn)
+    return inline_kb
+
+
 @dp.message_handler(commands=['show'])
 async def send_menu(message: Message):
     markup = ReplyKeyboardMarkup(resize_keyboard=True, selective=True,  one_time_keyboard=True)
@@ -77,8 +96,6 @@ async def process_callback_tuning(callback_query: CallbackQuery):
     db = SessionLocal()
     tuning = find_tuning_by_id(db, tuning_id)
     db.close()
-    # await bot.answer_callback_query(callback_query.id, text=tuning_id, show_alert=True)
-    # await bot.send_message(callback_query.from_user.id, f'Нажата инлайн кнопка! id={tuning_id}')
     inline_kb = InlineKeyboardMarkup()
     callback_data = 'del_id' + str(tuning_id)
     inline_btn = InlineKeyboardButton('Удалить настройку', callback_data=callback_data)
@@ -104,5 +121,56 @@ async def process_callback_delete(callback_query: CallbackQuery):
     await bot.send_message(
         callback_query.from_user.id,
         'Настройка удалена',
+        parse_mode='HTML',
+    )
+
+
+@dp.message_handler(regexp='Отобразить доступные фильтры настроек')
+async def process_filter_tunings(message: Message):
+    user_id = message['from'].id
+    db = SessionLocal()
+
+    filters = choice_filters_for_tuning(show_personal_tuning(db, user_id))
+    db.close()
+    markup = ReplyKeyboardMarkup(resize_keyboard=True, selective=True, one_time_keyboard=True)
+    if filters:
+        await ShowTuning.filter.set()
+        for filt in filters:
+            markup.add(filt)
+        await message.reply("Как вы хотите подобрать настройку?", reply_markup=markup)
+    else:
+        markup.add("Показать все мои настройки")
+        await message.reply('У вас слишком мало настроек, лучше показать все', reply_markup=markup)
+
+
+@dp.message_handler(lambda message: message.text, state=ShowTuning.filter)
+async def process_filter(message: Message, state: FSMContext):
+
+    async with state.proxy() as data:
+        data['filter'] = message.text
+    db = SessionLocal()
+    dat = find_personal_tunings_by_filter(db, data['filter'], message.from_user.id)
+    db.close()
+    filtered_tunings_kb = filtered_tunings_inline_kb(data['filter'], dat)
+    await message.reply(text='Доступные настройки: ', reply_markup=filtered_tunings_kb)
+    await state.finish()
+
+
+@dp.callback_query_handler(lambda c: c.data and c.data.startswith('pt'))
+async def process_callback_filttun(callback_query: CallbackQuery):
+    tuning = callback_query.data[2:]
+
+    fil = tuning.split('!filter')
+    fil_name = fil[1]
+    fil_value = fil[0]
+    db = SessionLocal()
+
+    tuning = find_tunings_by_filter(db, fil_name, fil_value, callback_query.from_user.id)
+    db.close()
+    inline_kb = all_tunings_inline_kb(tuning)
+    await bot.send_message(
+        callback_query.from_user.id,
+        'Доступные настройки: ',
+        reply_markup=inline_kb,
         parse_mode='HTML',
     )
