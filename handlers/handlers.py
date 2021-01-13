@@ -33,3 +33,10 @@ async def get_users(message: Message):
         await message.answer(text=text)
     else:
         await message.answer(text='Команда доступна только для администраторов')
+
+
+@dp.message_handler()
+async def process_help(message: Message):
+    await message.answer(
+        '/help - помощь по доступным командам.'
+    )
