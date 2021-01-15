@@ -42,6 +42,8 @@ def show_personal_tuning(db: Session, telegram_id: int):
 
 def choice_filters_for_tuning(data: dict):
     filters = list()
+    if not data['success']:
+        return filters
     if len(data['sail_models']) > 1:
         filters.append('По модели паруса')
     if len(data['locations']) > 1:
