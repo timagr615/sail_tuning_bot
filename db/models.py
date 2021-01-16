@@ -48,3 +48,12 @@ class Sail(Base):
     mast_step = Column(Integer)
     chocks = Column(String)
     spreraders_leng = Column(Integer)
+
+
+class Issue(Base):
+    __tablename__ = "issues"
+    id = Column(Integer, primary_key=True, index=True)
+    telegram_id = Column(Integer)
+    firstname = Column(String)
+    lastname = Column(String)
+    issue = Column(String)
