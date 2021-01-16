@@ -24,5 +24,5 @@ async def process_issue(message: Message, state: FSMContext):
     db = SessionLocal()
     crud.create_issue(db, data['issue'], message)
     db.close()
-    await message.answer('Благодарим за предоставленную информацию!')
+    await message.answer('Благодарим за предоставленную информацию, мы рассмотрим её в ближайшее время!')
     await state.finish()
