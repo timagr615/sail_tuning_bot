@@ -143,6 +143,12 @@ async def process_filter_tunings(message: Message):
         await message.reply('У вас слишком мало настроек, лучше показать все', reply_markup=markup)
 
 
+@dp.message_handler(lambda message: message.text not in ["По модели паруса", "По месту", "По качеству завала"],
+                    state=ShowTuning.filter)
+async def filter_invalid(message: Message):
+    return await message.reply("Нет такго фильтра, выберите с кнопки.")
+
+
 @dp.message_handler(lambda message: message.text, state=ShowTuning.filter)
 async def process_filter(message: Message, state: FSMContext):
 
