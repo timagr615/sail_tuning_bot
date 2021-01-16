@@ -111,3 +111,21 @@ def find_tunings_by_filter(db: Session, filt_name, filt_value, telegram_id: int)
         data.append([tuning.boat, tuning.sail_firm, tuning.sail_model, tuning.place, tuning.wind,
                      tuning.gusts, tuning.id])
     return data
+
+
+def get_issues(db: Session):
+    return db.query(models.Issue).all()
+
+
+def create_issue(db: Session, issue: str, message: types.Message):
+    current_user = message['from']
+    if not current_user.last_name:
+        current_user.last_name = ''
+    db_issue = models.Issue(telegram_id=current_user.id,
+                            firstname=current_user.first_name,
+                            lastname=current_user.last_name,
+                            issue=issue)
+    db.add(db_issue)
+    db.commit()
+    db.refresh(db_issue)
+    return db_issue

@@ -1,6 +1,7 @@
 from weather.weather_states import *
 from tuning.tuning_states import *
 from personal_tuning.personal_tuning_states import *
+from handlers.issue_handlers import *
 from personal_tuning.personal_show_states import *
 from bot import dp
 from db import crud
@@ -18,7 +19,9 @@ async def send_menu(message: Message):
     /tuning - выбрать настройку; \n
     /create - записать личную настройку; \n
     /show - показать личные настройки; \n
-    /weather - узнать прогноз погоды для конкретного места \n''', reply=False)
+    /weather - узнать прогноз погоды для конкретного места; \n
+    /issue - при возникновении вопроса или ошибки вы можете обратиться к этой команде и описать ваш вопрос \n''',
+                        reply=False)
 
 
 @dp.message_handler(commands=['users'])
