@@ -7,10 +7,10 @@ class BaseLogger:
         if log_file:
             if self.debug:
                 self.logger = logger.add("logs/debug.log", format="{time} {level} {message}", level="DEBUG",
-                                         rotation="1 MB", enqueue=True)
+                                         rotation="1 MB", enqueue=True, encoding="utf8")
             else:
                 self.logger = logger.add("logs/error.log", format="{time} {level} {message}", level="WARNING",
-                                         rotation="1 MB", enqueue=True)
+                                         rotation="1 MB", enqueue=True, encoding="utf8")
 
     @staticmethod
     def get_log(msg: str, level: str):
