@@ -37,7 +37,7 @@ async def process_callback_change(callback_query: CallbackQuery):
     kbd = get_inline_keyboard(tuning_id)
     await bot.send_message(
         callback_query.from_user.id,
-        'Выберите, какой параметр вы хотите изменить; можно по очереди выбирать несколько',
+        'Выберите параметр для изменения. Допускается редактирование всех параметров по очереди.',
         reply_markup=kbd,
     )
     # await ChangeTuning.param.set()
@@ -70,5 +70,5 @@ async def process_param_value(message: Message, state: FSMContext):
     db.close()
     await state.finish()
     await message.answer(
-        'Параметр изменён. Можете продолжить изменять завал, либо продолжить использование бота.'
+        'Параметр сохранен. Продолжайте изменение или перейдите к любой другой команде.'
     )

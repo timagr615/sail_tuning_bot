@@ -99,8 +99,8 @@ async def process_callback_tuning(callback_query: CallbackQuery):
     inline_kb = InlineKeyboardMarkup()
     callback_data_delete = 'del_id' + str(tuning_id)
     callback_data_change = 'change_id' + str(tuning_id)
-    inline_btn_delete = InlineKeyboardButton('Удалить настройку', callback_data=callback_data_delete)
-    inline_btn_change = InlineKeyboardButton('Изменить настройку', callback_data=callback_data_change)
+    inline_btn_delete = InlineKeyboardButton('Удалить', callback_data=callback_data_delete)
+    inline_btn_change = InlineKeyboardButton('Изменить', callback_data=callback_data_change)
     inline_kb.add(inline_btn_delete, inline_btn_change)
     await bot.send_message(
         callback_query.from_user.id,
