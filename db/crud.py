@@ -90,6 +90,21 @@ def find_tuning_by_id(db: Session, tuning_id: int):
     return tuning
 
 
+def update_tuning_by_params(db: Session, params: dict):
+    tuning_id = params['tuning_id']
+    tuning = find_tuning_by_id(db, tuning_id)
+    if params['param'] == 'mast_rake':
+        tuning.mast_rake = float(params['param_value'])
+    elif params['param'] == 'prebend':
+        tuning.prebend = int(params['param_value'])
+    elif params['param'] == 'tension':
+        tuning.tension = float(params['param_value'])
+    else:
+        tuning.mast_step = int(params['param_value'])
+    db.add(tuning)
+    db.commit()
+
+
 def delete_tuning_by_id(db: Session, tuning_id: int):
     db.query(models.Tuning).filter(models.Tuning.id == tuning_id).delete(synchronize_session=False)
     db.commit()
