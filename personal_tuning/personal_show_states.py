@@ -17,10 +17,10 @@ class ShowTuning(StatesGroup):
 
 def return_tuning_text(tuning):
     text = fmt.text(
+        fmt.text(fmt.hbold('Место: '), fmt.hbold(tuning.place)),
         fmt.text('Лодка: ', tuning.boat),
         fmt.text('Фирма паруса: ', tuning.sail_firm),
         fmt.text('Модель паруса: ', tuning.sail_model),
-        fmt.text('Место: ', tuning.place),
         fmt.text('Ветер: ', tuning.wind, 'kt'),
         fmt.text('Порывы: ', tuning.gusts, 'kt'),
         fmt.text('Высота волн:', tuning.wave_height, 'm'),
@@ -97,9 +97,11 @@ async def process_callback_tuning(callback_query: CallbackQuery):
     tuning = find_tuning_by_id(db, tuning_id)
     db.close()
     inline_kb = InlineKeyboardMarkup()
-    callback_data = 'del_id' + str(tuning_id)
-    inline_btn = InlineKeyboardButton('Удалить настройку', callback_data=callback_data)
-    inline_kb.add(inline_btn)
+    callback_data_delete = 'del_id' + str(tuning_id)
+    callback_data_change = 'change_id' + str(tuning_id)
+    inline_btn_delete = InlineKeyboardButton('Удалить настройку', callback_data=callback_data_delete)
+    inline_btn_change = InlineKeyboardButton('Изменить настройку', callback_data=callback_data_change)
+    inline_kb.add(inline_btn_delete, inline_btn_change)
     await bot.send_message(
         callback_query.from_user.id,
         return_tuning_text(tuning),

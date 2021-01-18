@@ -3,6 +3,7 @@ from tuning.tuning_states import *
 from personal_tuning.personal_tuning_states import *
 from handlers.issue_handlers import *
 from personal_tuning.personal_show_states import *
+from personal_tuning.change_tuning_states import *
 from bot import dp
 from db import crud
 from db.database import SessionLocal
