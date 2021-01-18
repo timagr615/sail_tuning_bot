@@ -90,8 +90,7 @@ async def process_place(message: Message, state: FSMContext):
     async with state.proxy() as data:
         data['sail_model'] = message.text
     await PersonalTuning.next()
-    ReplyKeyboardRemove()
-    await message.reply('Укажите место в виде: Страна, Город')
+    await message.reply('Укажите место в виде: Страна, Город', reply_markup=ReplyKeyboardRemove())
 
 
 @dp.message_handler(lambda message: message.text, state=PersonalTuning.place)
@@ -136,8 +135,7 @@ async def process_wave_len(message: Message, state: FSMContext):
     async with state.proxy() as data:
         data['wave_length'] = message.text
     await PersonalTuning.next()
-    ReplyKeyboardRemove()
-    await message.reply('Укажите вес экипажа в килограммах.')
+    await message.reply('Укажите вес экипажа в килограммах.', reply_markup=ReplyKeyboardRemove())
 
 
 @dp.message_handler(lambda message: message.text, state=PersonalTuning.crew_weight)
@@ -215,9 +213,8 @@ async def process_quality(message: Message, state: FSMContext):
     quality = message.text
     async with state.proxy() as data:
         data['quality'] = quality
-    ReplyKeyboardRemove()
     await PersonalTuning.next()
-    await message.reply('Напишите короткое описание завала.')
+    await message.reply('Напишите короткое описание завала.', reply_markup=ReplyKeyboardRemove())
 
 
 @dp.message_handler(lambda message: message.text, state=PersonalTuning.description)
