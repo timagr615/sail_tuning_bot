@@ -15,6 +15,16 @@ class ShowTuning(StatesGroup):
     custom_tuning = State()
 
 
+def tuning_inline_kb(tuning_id: int) -> InlineKeyboardMarkup:
+    inline_kb = InlineKeyboardMarkup()
+    callback_data_delete = 'del_id' + str(tuning_id)
+    callback_data_change = 'change_id' + str(tuning_id)
+    inline_btn_delete = InlineKeyboardButton('Удалить', callback_data=callback_data_delete)
+    inline_btn_change = InlineKeyboardButton('Изменить', callback_data=callback_data_change)
+    inline_kb.add(inline_btn_delete, inline_btn_change)
+    return inline_kb
+
+
 def return_tuning_text(tuning):
     text = fmt.text(
         fmt.text(fmt.hbold('Место: '), fmt.hbold(tuning.place)),
@@ -96,16 +106,10 @@ async def process_callback_tuning(callback_query: CallbackQuery):
     db = SessionLocal()
     tuning = find_tuning_by_id(db, tuning_id)
     db.close()
-    inline_kb = InlineKeyboardMarkup()
-    callback_data_delete = 'del_id' + str(tuning_id)
-    callback_data_change = 'change_id' + str(tuning_id)
-    inline_btn_delete = InlineKeyboardButton('Удалить', callback_data=callback_data_delete)
-    inline_btn_change = InlineKeyboardButton('Изменить', callback_data=callback_data_change)
-    inline_kb.add(inline_btn_delete, inline_btn_change)
     await bot.send_message(
         callback_query.from_user.id,
         return_tuning_text(tuning),
-        reply_markup=inline_kb,
+        reply_markup=tuning_inline_kb(tuning_id),
         parse_mode="HTML",
     )
 
