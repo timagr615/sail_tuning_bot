@@ -1,10 +1,11 @@
 from aiogram.dispatcher.filters.state import State, StatesGroup
 import aiogram.utils.markdown as fmt
 from aiogram.types import Message, ReplyKeyboardRemove, ReplyKeyboardMarkup
-from bot import dp, weather
+from bot import dp
 from aiogram.dispatcher import FSMContext
 from db.crud import create_tuning
 from db.database import SessionLocal
+from personal_tuning.personal_show_states import tuning_inline_kb
 from config import logger
 
 
@@ -222,6 +223,10 @@ async def process_description(message: Message, state: FSMContext):
     description = message.text
     async with state.proxy() as data:
         data['description'] = description
+
+    db = SessionLocal()
+    tuning = create_tuning(db, message, data)
+    db.close()
     await message.answer(
         fmt.text(
             fmt.text(fmt.hunderline("Фирма лодки:"), data['boat']),
@@ -243,9 +248,9 @@ async def process_description(message: Message, state: FSMContext):
             fmt.text(fmt.hunderline("Описание:"), data['description']),
             sep="\n"
         ),
-        parse_mode="HTML"
+        parse_mode="HTML",
+        reply_markup=tuning_inline_kb(tuning.id)
     )
-    db = SessionLocal()
-    create_tuning(db, message, data)
-    db.close()
+    await message.answer('Настройка записана. Просмотр, изменение и удаление настройки выполняется в команде /show.'
+                         'Для продолжения работы с ботом введите /help.')
     await state.finish()
